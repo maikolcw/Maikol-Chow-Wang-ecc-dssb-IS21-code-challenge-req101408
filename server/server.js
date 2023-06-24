@@ -32,6 +32,19 @@ app.get('/api/products', (req, res) => {
     res.json(productsJSON)
 })
 
+app.get('/api/product/:id', (req, res) => {
+    var found = false
+    for (i = 0; i < productsJSON.length; i++) {
+        if (productsJSON[i].productId == req.params.id) {
+            found = true
+            break
+        }
+    }
+
+    if (found) { res.json(productsJSON[i]); return }
+    res.json({ msg: "not found" })
+})
+
 app.post('/api', (req, res) => {
     res.send('Create a new product')
 })
