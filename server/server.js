@@ -24,12 +24,14 @@ app.listen(port, async () => {
 }
 )
 
+// check health route
 app.get('/api', (req, res) => {
-    res.send('API is healthy!')
+    res.status(200).json({ msg: "API is healthy!" })
 })
 
+// grabs all products
 app.get('/api/products', (req, res) => {
-    res.json(productsJSON)
+    res.status(200).json(productsJSON)
 })
 
 app.get('/api/product/:id', (req, res) => {
@@ -42,15 +44,17 @@ app.get('/api/product/:id', (req, res) => {
     }
 
     if (found) { res.json(productsJSON[i]); return }
-    res.json({ msg: "not found" })
+    res.status(404).json({ msg: "not found" })
 })
 
 app.post('/api', (req, res) => {
     res.send('Create a new product')
 })
 
-app.put('/api', (req, res) => {
-    res.send('Update a product')
+app.use(express.json())
+app.post('/api/product', (req, res) => {
+    productsJSON.push(req.body)
+    res.json(req.body)
 })
 
 app.delete('/api', (req, res) => {
