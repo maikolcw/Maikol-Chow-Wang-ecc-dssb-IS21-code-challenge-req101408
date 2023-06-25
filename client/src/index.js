@@ -1,12 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
+import axios from 'axios'
+import Product from './Components/Product';
 import './index.css';
 
 
+
 function Main() {
+  // state that hold the vanilla array of product objects
+  const [products, setProducts] = useState([])
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/api/products')
+      .then(res => res.data)
+      .then(data => {
+        setProducts(data);
+      })
+      .catch(error => {
+        alert(`There was an error! ${error.message}`);
+      });
+  }, [])
 
   return (
-    <>   
+    <>
       <table className='table-auto'>
         <thead>
           <tr>
@@ -22,7 +38,13 @@ function Main() {
           </tr>
         </thead>
         <tbody>
-          
+          {
+            products.map((product, index) => {
+              return (
+                <Product key={index} product={product} />
+              )
+            })
+          }
         </tbody>
       </table>
     </>
