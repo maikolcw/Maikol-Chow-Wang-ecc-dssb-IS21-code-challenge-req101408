@@ -34,27 +34,36 @@ app.get('/api/products', (req, res) => {
     res.status(200).json(productsJSON)
 })
 
+// used for testing post/put/delete routes
 app.get('/api/product/:productId', (req, res) => {
     var found = false
+    if (!isValidProductId(req.params.productId)) {
+        res.status(400).json({ msg: "Bad Request" })
+        return
+    }
     for (i = 0; i < productsJSON.length; i++) {
-        if (productsJSON[i].productId == req.params.id) {
+        if (productsJSON[i].productId == req.params.productId) {
             found = true
             break
         }
     }
 
-    if (found) { res.json(productsJSON[i]); return }
-    res.status(404).json({ msg: "not found" })
-})
-
-app.post('/api', (req, res) => {
-    res.send('Create a new product')
+    if (found) {
+        res.status(200).json(productsJSON[i])
+    } else {
+        res.status(404).json({ msg: "Not Found" })
+    }
 })
 
 app.use(express.json())
+// post a new product
 app.post('/api/product', (req, res) => {
-    productsJSON.push(req.body)
-    res.json(req.body)
+    if (isValidRequestBody(req.body)) {
+        productsJSON.unshift(req.body)
+        res.status(201).json({ msg: "Successfully created" })
+    } else {
+        res.status(400).json({ msg: "Bad Request" })
+    }
 })
 
 app.delete('/api', (req, res) => {
