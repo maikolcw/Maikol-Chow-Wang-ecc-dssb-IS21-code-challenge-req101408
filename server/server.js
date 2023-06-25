@@ -66,7 +66,7 @@ app.post('/api/product', (req, res) => {
     }
 })
 
-// replace a product by productid, must provide all proper attributes of a product object in request body
+// replace a product by productId, must provide all proper attributes of a product object in request body
 app.put('/api/product/:productId', (req, res) => {
     var found = false
     if (!isValidProductId(req.params.productId)) {
@@ -97,8 +97,25 @@ app.put('/api/product/:productId', (req, res) => {
     }
 })
 
-app.delete('/api', (req, res) => {
-    res.send('Delete a product')
+// delete a product by productId
+app.delete('/api/product/:productId', (req, res) => {
+    var found = false
+    if (!isValidProductId(req.params.productId)) {
+        res.status(400).json({ msg: "Bad Request" })
+        return
+    }
+    for (i = 0; i < productsJSON.length; i++) {
+        if (productsJSON[i].productId == req.params.productId) {
+            found = true
+            break
+        }
+    }
+    if (found) {
+        productsJSON = productsJSON.filter(product => product.productId != req.params.productId);
+        res.status(200).json({ msg: "Successfully deleted" })
+    } else {
+        res.status(404).json({ msg: "Not Found" })
+    }
 })
 
 // Backend verification of request body
