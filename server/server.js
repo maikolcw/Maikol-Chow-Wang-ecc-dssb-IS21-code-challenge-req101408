@@ -1,7 +1,6 @@
 const express = require('express')
-const { writeFile, readFile } = require('fs')
+const { readFile } = require('fs')
 const util = require('util')
-const writeFileAsync = util.promisify(writeFile)
 const readFileAsync = util.promisify(readFile)
 
 const app = express()
@@ -23,6 +22,14 @@ app.listen(port, async () => {
     console.log(`Example app listening on port ${port} and is ready to go`)
 }
 )
+
+// enable cors
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 // check health route
 app.get('/api', (req, res) => {
