@@ -16,7 +16,7 @@ function Main() {
             <th className='border-2'>Scrum Master Name</th>
             <th className='border-2'>Start Date</th>
             <th className='border-2'>Methodology</th>
-            <th className='border-2'>Location</th>
+            <th className='border-2'>Locations</th>
             <th></th>
           </tr>
         </thead>
