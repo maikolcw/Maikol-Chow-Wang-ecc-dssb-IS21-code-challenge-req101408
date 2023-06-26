@@ -2,13 +2,18 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import axios from 'axios'
 import Product from './Components/Product';
+import CreateModal from './Components/CreateModal';
 import './index.css';
 
 
 
 function Main() {
-  // state that hold the vanilla array of product objects
+  // state that holds the array of product objects
   const [products, setProducts] = useState([])
+  // helper state to govern modal open/close state
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  // helper state to tell when to refresh fetching all products from server
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
     axios.get('http://localhost:3000/api/products')
@@ -19,10 +24,24 @@ function Main() {
       .catch(error => {
         alert(`There was an error! ${error.message}`);
       });
-  }, [])
+  }, [refresh])
 
   return (
     <>
+      <CreateModal
+        open={openCreateModal}
+        onClose={() => setOpenCreateModal(false)}
+        refresh={refresh}
+        setRefresh={setRefresh}
+        products={products}
+      />
+      {/* Opens the create product modal */}
+      <button onClick={() => {
+        setOpenCreateModal(true)
+      }
+      } className='h-11 px-2 m-2 border-none bg-gray-300 hover:bg-black hover:text-white text-black rounded-lg text-xl cursor-pointer'>
+        Add new product
+      </button>
       <h1>Total number of products: {products.length}</h1>
       <table className='table-auto'>
         <thead>
