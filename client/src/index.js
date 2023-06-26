@@ -23,14 +23,15 @@ function Main() {
 
   return (
     <>
+      <h1>Total number of products: {products.length}</h1>
       <table className='table-auto'>
         <thead>
           <tr>
-            <th className='border-2'>Product ID</th>
+            <th className='border-2'>Product Number</th>
             <th className='border-2'>Product Name</th>
-            <th className='border-2'>Product Owner Name</th>
-            <th className='border-2'>Developers</th>
-            <th className='border-2'>Scrum Master Name</th>
+            <th className='border-2'>Scrum Master</th>
+            <th className='border-2'>Product Owner</th>
+            <th className='border-2'>Developer Names</th>
             <th className='border-2'>Start Date</th>
             <th className='border-2'>Methodology</th>
             <th className='border-2'>Location</th>
