@@ -1,43 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// This component houses all the UI and logic to create a new product
-function CreateModal({ open, onClose, refresh, setRefresh, products }) {
-    // state that holds all attributes of a product
+// Modal for editing an existing product
+function EditModal({ open, onClose, product, refresh, setRefresh }) {
+    // One state that covers all product values in an object data structure
+    // Used for prefilling form and creating request body for API call
     const [inputs, setInputs] = useState({});
-    // helper states to store validation error messages
+    // States that store the error messages from validation
     const [productNameError, setProductNameError] = useState(null);
     const [productOwnerNameError, setProductOwnerNameError] = useState(null);
     const [developersError, setDevelopersError] = useState(null);
     const [scrumMasterNameError, setScrumMasterNameError] = useState(null);
-    const [startDateError, setStartDateError] = useState(null);
     const [methodologyError, setMethodologyError] = useState(null);
     const [locationError, setLocationError] = useState(null);
-
-    // Set initial values to null so next product creation starts clean
+    // Sets up the inputs state values whenever modal first opens
     useEffect(() => {
         function setInputsWithInitialProductValues() {
             setInputs({
-                'productName': null,
-                'productOwnerName': null,
-                'Developers': null,
-                'scrumMasterName': null,
-                'startDate': null,
-                'methodology': null,
-                'location': null
+                'productName': product.productName,
+                'productOwnerName': product.productOwnerName,
+                'Developers': product.Developers,
+                'scrumMasterName': product.scrumMasterName,
+                'startDate': product.startDate,
+                'methodology': product.methodology,
+                'location': product.location
             })
         }
         setInputsWithInitialProductValues()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open]);
 
-    // helper function to clean previous validation messages and close modal
-    function clearValidationMessagesAndCloseCreateModal() {
+    // Cleans up validation messages if any and closes the edit modal
+    function clearValidationMessagesAndCloseEditModal() {
         setProductNameError(null);
         setProductOwnerNameError(null);
         setDevelopersError(null);
         setScrumMasterNameError(null);
-        setStartDateError(null);
         setMethodologyError(null);
         setLocationError(null);
         onClose();
@@ -65,10 +63,6 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
             }
         }
     }
-    // Regex check for valid start date, must be between 1950-2035, in YYYY/MM/DD format
-    function isValidStartDate(text) {
-        return /^(19[5-9][0-9]|20[0-2][0-9]|20[3][0-5])\/([0][1-9]|[1][0-2])\/([0][1-9]|[1-2][0-9]|[3][0-1])$/.test(text);
-    }
     // Regex check for valid methodology, must either be exactly Agile or Waterfall
     function isValidMethodology(text) {
         return /^(Agile|Waterfall)$/.test(text);
@@ -78,29 +72,7 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
     function isValidBCGovLink(text) {
         return /^https:\/\/github.com\/bcgov\/[a-zA-Z-_0-9]+(\w|-)*$/.test(text);
     }
-    // Generates a 24 digit UUID and checks if it already exists, if not return the new UUID
-    function generateNonDuplicate24DigitUUID() {
-        let counter = 1;
-        let twentyFourDigitUUID = '';
-        while (counter > 0) {
-            counter = 0;
-            twentyFourDigitUUID = '';
-            for (let j = 0; j < 8; j++) {
-                let randomNumber = (Math.random() * 46656) | 0;
-                randomNumber = ("000" + randomNumber.toString(36)).slice(-3);
-                twentyFourDigitUUID += randomNumber;
-            }
-            // eslint-disable-next-line
-            products.forEach(product => {
-                // eslint-disable-next-line
-                if (product.productId == twentyFourDigitUUID) {
-                    counter += 1;
-                }
-            });
-        }
-        return twentyFourDigitUUID;
-    }
-    // Helper handler to record all input changes
+    // one event listener to handle all input events and stores them in inputs state
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -110,14 +82,14 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
             setInputs(values => ({ ...values, [name]: value }))
         }
     }
-    // Validates inputs and makes a POST request to backend
+    // form handle that cleans previous validations first, goes through all input checks, and if all inputs are valid
+    // sends a PUT request to back end with request body of an object of a product
     const handleSubmit = async (event) => {
         event.preventDefault();
         setProductNameError(null);
         setProductOwnerNameError(null);
         setDevelopersError(null);
         setScrumMasterNameError(null);
-        setStartDateError(null);
         setMethodologyError(null);
         setLocationError(null);
 
@@ -133,9 +105,6 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
         if (!isValidFullName(inputs.scrumMasterName)) {
             setScrumMasterNameError("Scrum master name must start with a capital for first and last name only")
         }
-        if (!isValidStartDate(inputs.startDate)) {
-            setStartDateError("Start date must be between 1950 to 2035, in YYYY/MM/DD")
-        }
         if (!isValidMethodology(inputs.methodology)) {
             setMethodologyError("Methodology must be either Agile or Waterfall")
         }
@@ -143,11 +112,9 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
             setLocationError("Location must be a BC Gov Github repository link")
         }
         if (isValidProductName(inputs.productName) && isValidFullName(inputs.productOwnerName) && isValidDevelopers(inputs.Developers)
-            && isValidFullName(inputs.scrumMasterName) && isValidStartDate(inputs.startDate) && isValidMethodology(inputs.methodology)
-            && isValidBCGovLink(inputs.location)) {
-            var newProductId = generateNonDuplicate24DigitUUID();
+            && isValidFullName(inputs.scrumMasterName) && isValidMethodology(inputs.methodology) && isValidBCGovLink(inputs.location)) {
             const reqBody = {
-                productId: newProductId,
+                productId: product.productId,
                 productName: inputs.productName,
                 productOwnerName: inputs.productOwnerName,
                 Developers: inputs.Developers,
@@ -156,7 +123,7 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
                 methodology: inputs.methodology,
                 location: inputs.location
             };
-            await axios.post(`http://localhost:3000/api/product`, reqBody)
+            await axios.put(`http://localhost:3000/api/product/${product.productId}`, reqBody)
                 // .then(response => console.log(response.data.msg))
                 .catch(error => {
                     alert(`There was an error! ${error.message}`);
@@ -168,7 +135,12 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
 
     if (!open) return null;
     return (
-        <div onClick={clearValidationMessagesAndCloseCreateModal} className='fixed flex bg-black/50 w-full h-full z-10 top-[0%] left-[0%]'>
+        /* 
+        This outer div is the greyed out region of the modal that spans the entire screen.
+        When user clicks on this region the modal is closed by setting state openEditModal to false.
+        */
+        <div onClick={clearValidationMessagesAndCloseEditModal} className='fixed flex bg-black/50 w-full h-full z-10 top-[0%] left-[0%]'>
+            {/* Need this to close out child elements when clicking on grey region */}
             <div onClick={(e) => {
                 e.stopPropagation();
             }}
@@ -181,7 +153,7 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
                                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     type="text"
                                     name="productName"
-                                    placeholder='PRODUCT'
+                                    value={inputs.productName || ''}
                                     onChange={handleChange}
                                 />
                             </label>
@@ -192,7 +164,7 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
                                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     type="text"
                                     name="productOwnerName"
-                                    placeholder='Firstname Lastname'
+                                    value={inputs.productOwnerName || ''}
                                     onChange={handleChange}
                                 />
                             </label>
@@ -204,7 +176,7 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
                                 className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                 type="text"
                                 name="Developers"
-                                placeholder='Firstname Lastname(,Firstname Lastname) // 5 total'
+                                value={inputs.Developers || ''}
                                 onChange={handleChange}
                             />
                         </label>
@@ -215,30 +187,19 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
                                 className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                 type="text"
                                 name="scrumMasterName"
-                                placeholder='Firstname Lastname'
+                                value={inputs.scrumMasterName || ''}
                                 onChange={handleChange}
                             />
                         </label>
                     </div>
                     <div className='flex justify-evenly mb-2'>
                         <div className='px-3'>
-                            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">Start Date:
-                                <input
-                                    className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                    type="text"
-                                    name="startDate"
-                                    placeholder='YYYY/MM/DD'
-                                    onChange={handleChange}
-                                />
-                            </label>
-                        </div>
-                        <div className='px-3'>
                             <label className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name'>Methodology:
                                 <input
                                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     type="text"
                                     name="methodology"
-                                    placeholder='Agile or Waterfall'
+                                    value={inputs.methodology || ''}
                                     onChange={handleChange}
                                 />
                             </label>
@@ -251,7 +212,7 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
                                     className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                     type="text"
                                     name="location"
-                                    placeholder='https://github.com/bcgov/...'
+                                    value={inputs.location || ''}
                                     onChange={handleChange}
                                 />
                             </label>
@@ -259,20 +220,19 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
                     </div>
                     <div className="flex justify-center">
                         <button className='w-36 h-11 m-2 border-none bg-gray-300 hover:bg-black hover:text-white text-black rounded-lg text-xl cursor-pointer'
-                            onClick={clearValidationMessagesAndCloseCreateModal}
+                            onClick={clearValidationMessagesAndCloseEditModal}
                         >
                             Cancel
                         </button>
                         <input className='w-36 h-11 m-2 border-none bg-gray-300 hover:bg-black hover:text-white text-black rounded-lg text-xl cursor-pointer'
-                            value='Save'
+                            value='Edit'
                             type="submit" />
                     </div>
-                    {/* Validation messages */}
+                    {/* Conditionals to display any validation messages when filling out the form */}
                     {productNameError && <h2 className='text-red-300'>{productNameError}</h2>}
                     {productOwnerNameError && <h2 className='text-red-300'>{productOwnerNameError}</h2>}
                     {developersError && <h2 className='text-red-300'>{developersError}</h2>}
                     {scrumMasterNameError && <h2 className='text-red-300'>{scrumMasterNameError}</h2>}
-                    {startDateError && <h2 className='text-red-300'>{startDateError}</h2>}
                     {methodologyError && <h2 className='text-red-300'>{methodologyError}</h2>}
                     {locationError && <h2 className='text-red-300'>{locationError}</h2>}
                 </form>
@@ -281,4 +241,4 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
     );
 }
 
-export default CreateModal
+export default EditModal

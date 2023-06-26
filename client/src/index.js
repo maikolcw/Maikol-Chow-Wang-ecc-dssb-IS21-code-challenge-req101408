@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import axios from 'axios'
 import Product from './Components/Product';
 import CreateModal from './Components/CreateModal';
+import EditModal from './Components/EditModal';
 import './index.css';
 
 
@@ -12,6 +13,9 @@ function Main() {
   const [products, setProducts] = useState([])
   // helper state to govern modal open/close state
   const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  // the active product that we want to edit
+  const [editProduct, setEditProduct] = useState({});
   // helper state to tell when to refresh fetching all products from server
   const [refresh, setRefresh] = useState(false);
 
@@ -34,6 +38,13 @@ function Main() {
         refresh={refresh}
         setRefresh={setRefresh}
         products={products}
+      />
+      <EditModal
+        open={openEditModal}
+        onClose={() => setOpenEditModal(false)}
+        product={editProduct}
+        refresh={refresh}
+        setRefresh={setRefresh}
       />
       {/* Opens the create product modal */}
       <button onClick={() => {
@@ -61,7 +72,7 @@ function Main() {
           {
             products.map((product, index) => {
               return (
-                <Product key={index} product={product} />
+                <Product key={index} product={product} setOpenEditModal={setOpenEditModal} setEditProduct={setEditProduct}/>
               )
             })
           }
