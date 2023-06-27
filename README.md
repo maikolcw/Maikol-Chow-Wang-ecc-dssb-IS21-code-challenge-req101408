@@ -28,7 +28,6 @@ As per requirements:
     Up to 5 developers per project
     UUID generation is unique on project creation
     Swagger documentation at http://localhost:3000/api/api-docs
-    Initial 40 sample data generated adheres to product attributes
     Attributes of product adheres to requirements listed below
     Amongst other requirements
 
