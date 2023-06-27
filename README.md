@@ -7,7 +7,7 @@ How to start:
     npm install
     npm start
 
-Frontend uses modern javascript framework Reactjs. Code is organized into components. Modules used are Axios for REST requests and Tailwindcss for css styling. Frontend hosted on localhost:4000.
+Frontend uses modern javascript framework Reactjs. Code is organized into components. Axios is used for REST requests and Tailwindcss for css styling. Frontend hosted on localhost:4000.
 
 Backend uses Express for API route development and Swagger-ui-express for API documentation. A thunder client collection is also available for testing in Visual Studio Code Thunderclient extension.
 
