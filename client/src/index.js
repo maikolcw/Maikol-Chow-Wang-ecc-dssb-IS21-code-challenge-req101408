@@ -18,6 +18,8 @@ function Main() {
   const [editProduct, setEditProduct] = useState({});
   // helper state to tell when to refresh fetching all products from server
   const [refresh, setRefresh] = useState(false);
+  // helper state to check window size
+  const [isWindowSize1024, setIsWindowSize1024] = useState(window.matchMedia("(min-width: 1024px)").matches)
 
   useEffect(() => {
     axios.get('http://localhost:3000/api/products')
@@ -29,6 +31,54 @@ function Main() {
         alert(`There was an error! ${error.message}`);
       });
   }, [refresh])
+
+  useEffect(() => {
+    window
+      .matchMedia("(min-width: 1024px)")
+      .addEventListener('change', e => setIsWindowSize1024(e.matches));
+  }, []);
+
+  function Display({ is1024 }) {
+    if (is1024) {
+      return (
+        <table className='table-auto'>
+          <thead>
+            <tr className=''>
+              <th className='border-2'>Product Number</th>
+              <th className='border-2'>Product Name</th>
+              <th className='border-2'>Scrum Master</th>
+              <th className='border-2'>Product Owner</th>
+              <th className='border-2'>Developer Names</th>
+              <th className='border-2'>Start Date</th>
+              <th className='border-2'>Methodology</th>
+              <th className='border-2'>Location</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              products.map((product, index) => {
+                return (
+                  <Product key={index} product={product} setOpenEditModal={setOpenEditModal} setEditProduct={setEditProduct} isWindowSize1024={isWindowSize1024} />
+                )
+              })
+            }
+          </tbody>
+        </table>
+      )
+    } else {
+      return <div>
+        {
+          products.map((product, index) => {
+            return (
+              <Product key={index} product={product} setOpenEditModal={setOpenEditModal} setEditProduct={setEditProduct} isWindowSize1024={isWindowSize1024} />
+            )
+          })
+        }
+      </div>
+    }
+  }
+
 
   return (
     <>
@@ -46,38 +96,21 @@ function Main() {
         refresh={refresh}
         setRefresh={setRefresh}
       />
-      {/* Opens the create product modal */}
-      <button onClick={() => {
-        setOpenCreateModal(true)
-      }
-      } className='h-11 px-2 m-2 border-none bg-gray-300 hover:bg-black hover:text-white text-black rounded-lg text-xl cursor-pointer'>
-        Add new product
-      </button>
-      <h1>Total number of products: {products.length}</h1>
-      <table className='table-auto'>
-        <thead>
-          <tr>
-            <th className='border-2'>Product Number</th>
-            <th className='border-2'>Product Name</th>
-            <th className='border-2'>Scrum Master</th>
-            <th className='border-2'>Product Owner</th>
-            <th className='border-2'>Developer Names</th>
-            <th className='border-2'>Start Date</th>
-            <th className='border-2'>Methodology</th>
-            <th className='border-2'>Location</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            products.map((product, index) => {
-              return (
-                <Product key={index} product={product} setOpenEditModal={setOpenEditModal} setEditProduct={setEditProduct}/>
-              )
-            })
-          }
-        </tbody>
-      </table>
+      {/* Sticky add button and product number information */}
+      <div className='sticky top-0 bg-white'>
+        {/* Opens the create product modal */}
+        <button onClick={() => {
+          setOpenCreateModal(true)
+        }
+        } className='h-11 px-2 m-2 border-none bg-gray-300 hover:bg-black hover:text-white text-black rounded-lg text-xl cursor-pointer'>
+          Add new product
+        </button>
+        <h1>Total number of products: {products.length}</h1>
+      </div>
+      {/* Depending on window size, display of information will change */}
+      <Display
+        is1024={isWindowSize1024}
+      />
     </>
   )
 }

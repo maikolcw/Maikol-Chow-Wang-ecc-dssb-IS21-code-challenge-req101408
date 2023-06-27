@@ -172,7 +172,7 @@ function CreateModal({ open, onClose, refresh, setRefresh, products }) {
             <div onClick={(e) => {
                 e.stopPropagation();
             }}
-                className="fixed justify-evenly w-full h-auto sm:max-w-[50%] top-[10%] sm:left-[25%] bg-[#ffffff] rounded-xl shadow-2xl shadow-slate-400 py-5 px-5">
+                className="fixed justify-evenly w-full h-auto md:max-w-[50%] top-[10%] md:left-[25%] bg-[#ffffff] rounded-xl shadow-2xl shadow-slate-400 py-5 px-5">
                 <form onSubmit={handleSubmit} className="w-full">
                     <div className='flex justify-evenly my-2'>
                         <div className='px-3'>
