@@ -6,7 +6,7 @@ import Pen from '../Images/pen.png'
 function Product({ product, setOpenEditModal, setEditProduct, isWindowSize1024 }) {
     if (isWindowSize1024) {
         return (
-            <tr>
+            <tr className='h-full'>
                 <td className='border-2 text-center'>{product.productId}</td>
                 <td className='border-2 text-center'>{product.productName}</td>
                 <td className='border-2 text-center'>{product.scrumMasterName}</td>
@@ -24,20 +24,25 @@ function Product({ product, setOpenEditModal, setEditProduct, isWindowSize1024 }
                 </td>
                 <td className='border-2 text-center'>{product.startDate}</td>
                 <td className='border-2 text-center'>{product.methodology}</td>
-                <td className='border-2 text-center'>
-                    <a href={product.location} className='flex justify-center'>
-                        <img src={GitHub} alt="Github Link" className='w-[25px]' title={product.location} />
-                    </a>
-                </td>
-                <td className='border-2 text-center'>
-                    {/* Sets the product state to the current product and opens the edit product modal */}
-                    <button onClick={() => {
-                        setEditProduct(product)
-                        setOpenEditModal(true)
-                    }
-                    }>
-                        <img src={Pen} alt="Edit" className='w-[25px]' />
-                    </button>
+                <td className='border-2'>
+                    <div className='border-b-2 h-1/2 flex items-center justify-center'>
+                        <a href={product.location} target="_blank" rel="noreferrer" className=''>
+                            <img src={GitHub} alt="Github Link" className='m-auto w-[25px]' title={product.location} />
+                        </a>
+                    </div>
+                    <div className='border-t-2 h-1/2 flex items-center justify-center'>
+                        {/* Sets the product state to the current product and opens the edit product modal */}
+                        <button onClick={() => {
+                            setEditProduct(product)
+                            setOpenEditModal(true)
+                        }
+                        }>
+                            <img src={Pen} alt="Edit" className='w-[25px]' />
+                        </button>
+                    </div>
+
+
+
                 </td>
             </tr>
         )
@@ -83,7 +88,7 @@ function Product({ product, setOpenEditModal, setEditProduct, isWindowSize1024 }
                 <div className='border-2 font-bold px-3 w-40'>Location</div>
                 <div className='flex flex-row border-2 w-64 sm:w-2/3 justify-evenly'>
                     <div className='flex border-r-2 w-1/2 justify-center'>
-                        <a href={product.location}>
+                        <a href={product.location} target="_blank" rel="noreferrer">
                             <img src={GitHub} alt="Github Link" className='w-[25px]' title={product.location} />
                         </a>
                     </div>

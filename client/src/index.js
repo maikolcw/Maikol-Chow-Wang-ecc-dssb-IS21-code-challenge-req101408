@@ -44,7 +44,7 @@ function Main() {
   function Display({ is1024 }) {
     if (is1024) {
       return (
-        <table className='table-auto'>
+        <table className='table-auto h-full'>
           <thead>
             <tr className=''>
               <th className='border-2'>Product Number</th>
