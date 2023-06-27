@@ -1,0 +1,413 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Product API for ECC",
+        "description": "This is the documentation for the list of API routes for managing a local memory storage of products.",
+        "contact": {
+            "name": "Maikol Chow Wang",
+            "url": "https://github.com/maikolcw/Maikol-Chow-Wang-ecc-dssb-IS21-code-challenge-req101408"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000/api/"
+        }
+    ],
+    "tags": [
+        {
+            "name": "/",
+            "description": "For users to check health of server"
+        },
+        {
+            "name": "product",
+            "description": "Operations about a single product"
+        },
+        {
+            "name": "products",
+            "description": "Operations about multiple products"
+        }
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "tags": [
+                    "/"
+                ],
+                "summary": "Check health of server",
+                "description": "Ping to check if server is up",
+                "responses": {
+                    "200": {
+                        "description": "server is up",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "msg": "API is healthy!"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/product": {
+            "post": {
+                "tags": [
+                    "product"
+                ],
+                "summary": "Adds a new product",
+                "description": "Adds a new product with auto generated productId",
+                "requestBody": {
+                    "description": "A product object",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Product"
+                            },
+                            "example": {
+                                "productId": "64977712e20f31adfe159bd0",
+                                "productName": "ZYPLETWO",
+                                "productOwnerName": "Barron Graves",
+                                "Developers": [
+                                    "Georgette Johnson",
+                                    "Medina Marshall"
+                                ],
+                                "scrumMasterName": "Villarreal Velez",
+                                "startDate": "2017/08/18",
+                                "methodology": "Waterfall",
+                                "location": "https://github.com/bcgov/digital-principles"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "msg": "Successfully created"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request, parameter doesn't meet requirements for valid UUID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "msg": "Bad Request"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/products": {
+            "get": {
+                "tags": [
+                    "products"
+                ],
+                "summary": "Find all products",
+                "description": "Returns all products available",
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Product"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/product/{:id}": {
+            "get": {
+                "tags": [
+                    "product"
+                ],
+                "summary": "Find a product by product id",
+                "description": "Finds product by productId attribute, which is a 24 digit UUID string.",
+                "parameters": [
+                    {
+                        "name": ":id",
+                        "in": "path",
+                        "description": "The productId attribute of the product object",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "649777121c4e4ee2c32f64b5"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Product"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request, parameter doesn't meet requirements for valid UUID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "msg": "Bad Request"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "msg": "Not Found"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "product"
+                ],
+                "summary": "Updates a product by product id",
+                "description": "Finds product by productId attribute and replaces original with requestbody's product object except productId",
+                "parameters": [
+                    {
+                        "name": ":id",
+                        "in": "path",
+                        "description": "The productId attribute of the product object",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "64977712decda4abb2bf69d4"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Product"
+                            },
+                            "example": {
+                                "productId": "64977712decda4abb2bf69d4",
+                                "productName": "ENDICILCHANGED",
+                                "productOwnerName": "John Changed",
+                                "Developers": [
+                                    "Bob Changed",
+                                    "Tom Changed"
+                                ],
+                                "scrumMasterName": "Charlie Changed",
+                                "startDate": "2016/05/25",
+                                "methodology": "Waterfall",
+                                "location": "https://github.com/bcgov/digital-principles"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "msg": "Successfully Updated"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request, parameter doesn't meet requirements for valid UUID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "msg": "Bad Request"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "msg": "Not Found"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "product"
+                ],
+                "summary": "Deletes a product by productId",
+                "description": "Finds product by productId attribute and deletes the product",
+                "parameters": [
+                    {
+                        "name": ":id",
+                        "in": "path",
+                        "description": "The productId attribute of the product object",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "64977712c52ceaf8ff796f2f"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "msg": "Successfully Deleted"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request, parameter doesn't meet requirements for valid UUID",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "msg": "Bad Request"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                },
+                                "example": {
+                                    "msg": "Not Found"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Product": {
+                "type": "object",
+                "properties": {
+                    "productId": {
+                        "type": "string",
+                        "description": "String with length 24 consisting of letters or numbers",
+                        "example": "649777125b58dcb5f1f97277"
+                    },
+                    "productName": {
+                        "type": "string",
+                        "description": "One word all uppercase",
+                        "example": "GONKLE"
+                    },
+                    "productOwnerName": {
+                        "type": "string",
+                        "description": "First and Last name with first letter capitalized",
+                        "example": "John Wick"
+                    },
+                    "Developers": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "List of full names (Firstname and Lastname), up to a maximum of five and minimum of one",
+                        "example": [
+                            "John Doe",
+                            "John Smith"
+                        ]
+                    },
+                    "scrumMasterName": {
+                        "type": "string",
+                        "description": "First and Last name with first letter capitalized",
+                        "example": "Jane Doe"
+                    },
+                    "startDate": {
+                        "type": "string",
+                        "description": "Date in string with year from 1950 to 2035 in format YYYY/MM/DD",
+                        "example": "2023/12/01"
+                    },
+                    "methodology": {
+                        "type": "string",
+                        "description": "Either exactly Agile or Waterfall",
+                        "example": "Agile"
+                    },
+                    "location": {
+                        "type": "string",
+                        "description": "Must be a valid BC Gov GitHub repository",
+                        "example": "https://github.com/bcgov/digital-principles"
+                    }
+                },
+                "xml": {
+                    "name": "product"
+                }
+            }
+        },
+        "requestBodies": {
+            "Product": {
+                "description": "Product object that needs to be added or updated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Product"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

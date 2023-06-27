@@ -9,7 +9,7 @@ How to start:
 
 Frontend uses modern javascript framework Reactjs. Code is organized into components. Modules used are Axios for REST requests and Tailwindcss for css styling. Frontend hosted on localhost:4000.
 
-Backend uses Express for API route development. 
+Backend uses Express for API route development and Swagger-ui-express for API documentation. A thunder client collection is also available for testing in Visual Studio Code Thunderclient extension.
 
 As per requirements:
 
@@ -27,6 +27,7 @@ As per requirements:
     Backend has POST, PUT, DELETE, and GET routes
     Up to 5 developers per project
     UUID generation is unique on project creation
+    Swagger documentation at http://localhost:3000/api/api-docs
     Initial 40 sample data generated adheres to product attributes
     Attributes of product adheres to requirements listed below
     Amongst other requirements

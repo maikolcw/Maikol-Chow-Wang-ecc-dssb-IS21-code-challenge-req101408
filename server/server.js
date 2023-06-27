@@ -2,11 +2,16 @@ const express = require('express')
 const { readFile } = require('fs')
 const util = require('util')
 const readFileAsync = util.promisify(readFile)
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 const app = express()
 const port = 3000
 // holds the products info from data.json in memory for manipulation
 var productsJSON = []
+
+// use swagger middleware
+app.use('/api/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(port, async () => {
     try {
@@ -124,6 +129,20 @@ app.delete('/api/product/:productId', (req, res) => {
         res.status(404).json({ msg: "Not Found" })
     }
 })
+
+// catch non-existent routes
+app.get('/*', (req, res) => {
+    res.json({ msg: "Sorry that route doesn't exist" });
+});
+app.put('/*', (req, res) => {
+    res.json({ msg: "Sorry that route doesn't exist" });
+});
+app.post('/*', (req, res) => {
+    res.json({ msg: "Sorry that route doesn't exist" });
+});
+app.delete('/*', (req, res) => {
+    res.json({ msg: "Sorry that route doesn't exist" });
+});
 
 // Backend verification of request body
 // Regex check for valid product id, must be 23-24 characters of letters and numbers only
