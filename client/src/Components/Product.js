@@ -2,7 +2,7 @@ import React from 'react'
 import GitHub from '../Images/github.png'
 import Pen from '../Images/pen.png'
 
-// A component that renders all product attributes in the form of a row of a table, along with edit button
+// A component that renders all product attributes, along with edit button
 function Product({ product, setOpenEditModal, setEditProduct, isWindowSize1024 }) {
     if (isWindowSize1024) {
         return (

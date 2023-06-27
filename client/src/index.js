@@ -21,7 +21,7 @@ function Main() {
   // helper state to check window size
   const [isWindowSize1024, setIsWindowSize1024] = useState(window.matchMedia("(min-width: 1024px)").matches)
 
-  
+
   useEffect(() => {
     axios.get('http://localhost:3000/api/products')
       .then(res => res.data)
@@ -40,7 +40,7 @@ function Main() {
       .addEventListener('change', e => setIsWindowSize1024(e.matches));
   }, []);
 
-  // Function checks if display is 1024 or greater and returns display according the width
+  // Function checks if display is 1024 or greater and returns display according to the width
   function Display({ is1024 }) {
     if (is1024) {
       return (
